@@ -23,7 +23,7 @@ After installation finishes you can use `node .` to start the bot.
 
 ## Configuration
 
-Put Discord bot token to `token.txt`
+Put Discord bot token to `token.txt` and
 Copy or Rename `config.json.example` to `config.json` and fill out the values:
 
 ```json

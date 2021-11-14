@@ -1,0 +1,32 @@
+{
+    "prefix": "!",
+    "id": "YOUR_DISCORD_ID",
+    "randomLinks": [
+        "https://gfycat.com/absolutealarminglarva",
+        "https://gfycat.com/abandonedvictoriouskronosaurus",
+        "https://gfycat.com/achingclearcaecilian"
+    ],
+    "webhookNames": [
+        "WEBHOOK-1",
+        "WEBHOOK-2",
+        "WEBHOOK-3"
+    ],
+    "channelNames": [
+        "CHANNEL-1",
+        "CHANNEL-2",
+		"CHANNEL-3",
+        "CHANNEL-4"
+    ],
+    "roleNames": [
+        "ROLE-1",
+        "ROLE-2",
+        "ROLE-3",
+		"ROLE-4"
+    ],
+    "fieldNames": [
+        "FIELD-1",
+        "FIELD-2",
+        "FIELD-3",
+        "FIELD-4"
+    ]
+}

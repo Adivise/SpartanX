@@ -29,34 +29,34 @@ Copy or Rename `config.json.example` to `config.json` and fill out the values:
 ```json
 {
     "prefix": "!",
-    "id": "515490955801919488",
+    "id": "YOUR_DISCORD_ID",
     "randomLinks": [
         "https://gfycat.com/absolutealarminglarva",
         "https://gfycat.com/abandonedvictoriouskronosaurus",
         "https://gfycat.com/achingclearcaecilian"
     ],
     "webhookNames": [
-        "Styles ONTOP",
-        "Styles RAIDER",
-        "Styles NUKER"
+        "WEBHOOK-1",
+        "WEBHOOK-2",
+        "WEBHOOK-3"
     ],
     "channelNames": [
-        "421260739970334720",
-        "470410381597343753",
-		    "470410381512365465",
-        "139247849350103040"
+        "CHANNEL-1",
+        "CHANNEL-2",
+	"CHANNEL-3",
+        "CHANNEL-4"
     ],
     "roleNames": [
-        "525134363831173130",
-        "540075891837894686",
-        "540075891231364586",
-		    "162927453189177344"
+        "ROLE-1",
+        "ROLE-2",
+        "ROLE-3",
+	"ROLE-4"
     ],
     "fieldNames": [
-        "Styles ONTOP",
-        "Styles RAIDER",
-        "Styles NUKER",
-        "Styles TOOL"
+        "FIELD-1",
+        "FIELD-2",
+        "FIELD-3",
+        "FIELD-4"
     ]
 }
 ```

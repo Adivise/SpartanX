@@ -1,5 +1,5 @@
 {
-  "name": "reflect",
+  "name": "Styles",
   "version": "1.9.2",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
 	"start": "node index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Adivise",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",

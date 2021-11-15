@@ -67,6 +67,6 @@ Copy or Rename `config.json.example` to `config.json` and fill out the values:
 
 💬 **Commands!** 
 
-Do all everthing! [!ww]
-Ban All! [!ban, !b]
-Kick All! [!kick, !k]
+- Do all everthing! [!ww]
+- Ban All! [!ban, !b]
+- Kick All! [!kick, !k]

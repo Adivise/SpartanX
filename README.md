@@ -1,5 +1,3 @@
-## STYLES
-
 ![see](https://i.imgur.com/QZVOFJE.jpg)
 
 ## PLEASE READ!

